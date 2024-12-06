@@ -112,6 +112,196 @@
             color: #6c757d;
             font-size: 14px;
         }
+        .spinner {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .spinner-container {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            margin-left: -125px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 2px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            bottom: 30px;
+            font-size: 17px;
+        }
+        .toast.show {
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+        @-webkit-keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+        @-webkit-keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+        @keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+        .toast-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        .toast {
+            visibility: hidden;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            text-align: center;
+            border-radius: 4px;
+            padding: 16px 24px;
+            font-size: 17px;
+            max-width: 80%;
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+        }
+        .spinner-container {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f0f8ff; /* 浅蓝色背景 */
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #3498db;
+            border-top: 3px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 15px;
+        }
+
+        .loading-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: #3498db; /* 使用更醒目的蓝色 */
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes dots {
+            0%, 20% {
+                content: "";
+            }
+            40% {
+                content: ".";
+            }
+            60% {
+                content: "..";
+            }
+            80%, 100% {
+                content: "...";
+            }
+        }
+
+        .dots::after {
+            content: "";
+            animation: dots 1.5s infinite;
+            display: inline-block;
+            width: 20px;
+            text-align: left;
+        }
+
     </style>
 </head>
 <body>
@@ -132,11 +322,14 @@
             <span id="file-chosen">No file chosen</span>
             <button class="upload-btn" onclick="uploadCSV()">Upload CSV</button>
         </div>
-        <div class="progress-container">
-            <div id="progress" class="progress"></div>
-            <div id="progress-text" class="progress-text">0%</div>
+        <div class="spinner-container" id="spinner-container">
+            <div class="spinner"></div>
+            <span>上传到模型分析中<span class="dots"></span></span>
         </div>
     </div>
+
+    <div id="toast" class="toast"></div>
+
     <div class="container">
         <div class="column">
             <h2>产品名称</h2>
@@ -174,34 +367,34 @@
             const xhr = new XMLHttpRequest();
             xhr.open('POST', '/api/upload-csv', true);
 
-            xhr.upload.onprogress = function(e) {
-                if (e.lengthComputable) {
-                    const percentComplete = Math.round((e.loaded / e.total) * 100);
-                    document.getElementById('progress').style.width = percentComplete + '%';
-                    document.getElementById('progress-text').textContent = percentComplete + '%';
-                }
-            };
+            document.getElementById('spinner-container').style.display = 'flex';
 
             xhr.onload = function() {
+                document.getElementById('spinner-container').style.display = 'none';
                 if (xhr.status === 200) {
-                    alert('CSV uploaded successfully');
-                    // 上传成功后刷新产品列表
+                    // showToast('CSV uploaded successfully');
                     loadProducts();
-                    // 重置进度条
-                    document.getElementById('progress').style.width = '0%';
-                    document.getElementById('progress-text').textContent = '0%';
-                    // 清空文件选择
                     fileInput.value = '';
                     fileChosen.textContent = 'No file chosen';
                 } else {
-                    alert('Error uploading CSV');
+                    showToast('Error uploading CSV');
                 }
             };
 
             xhr.send(formData);
         } else {
-            alert('Please select a CSV file');
+            showToast('Please select a CSV file');
         }
+    }
+
+    // 显示 Toast 提示
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(function(){
+            toast.classList.remove('show');
+        }, 3000);
     }
 
     // 将原来的产品加载逻辑封装成一个函数
@@ -229,7 +422,7 @@
     }
 
     // 初始加载
-    loadProducts();
+    // loadProducts();
 
 
     // 加载产品列表

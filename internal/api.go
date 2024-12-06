@@ -2,13 +2,11 @@ package internal
 
 import (
 	"context"
+	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"os"
 	"sync"
-	"time"
-
-	"github.com/gin-gonic/gin"
 )
 
 type Item struct {
@@ -32,7 +30,7 @@ var showCategories = make(map[string][]Item)
 //	}
 var showSubCategories = make(map[string][]Item)
 
-//var subCategories = map[string][]Item{
+// var subCategories = map[string][]Item{
 //	"11": {{ID: "111", Name: "iPhone"}, {ID: "112", Name: "iPad"}},
 //	"12": {{ID: "121", Name: "Mate系列"}, {ID: "122", Name: "P系列"}},
 //	"13": {{ID: "131", Name: "小米手机"}, {ID: "132", Name: "红米手机"}},
@@ -42,30 +40,30 @@ var showSubCategories = make(map[string][]Item)
 //	"31": {{ID: "311", Name: "对开门"}, {ID: "312", Name: "十字对开门"}},
 //	"32": {{ID: "321", Name: "滚筒"}, {ID: "322", Name: "波轮"}},
 //	"33": {{ID: "331", Name: "挂机"}, {ID: "332", Name: "柜机"}},
-//}
+// }
 
 func ProductsHandle(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
-	defer cancel()
-
-	mu.Lock()
-	defer mu.Unlock()
-
-	for len(showProducts) == 0 {
-		select {
-		case <-ctx.Done():
-			if ctx.Err() == context.DeadlineExceeded {
-				c.JSON(http.StatusRequestTimeout, gin.H{"error": "timeout waiting for products"})
-			} else {
-				c.JSON(http.StatusGatewayTimeout, gin.H{"error": "request cancelled"})
-			}
-			return
-		default:
-			mu.Unlock()
-			time.Sleep(100 * time.Millisecond)
-			mu.Lock()
-		}
-	}
+	// ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
+	// defer cancel()
+	//
+	// mu.Lock()
+	// defer mu.Unlock()
+	//
+	// for len(showProducts) == 0 {
+	// 	select {
+	// 	case <-ctx.Done():
+	// 		if ctx.Err() == context.DeadlineExceeded {
+	// 			c.JSON(http.StatusRequestTimeout, gin.H{"error": "timeout waiting for products"})
+	// 		} else {
+	// 			c.JSON(http.StatusGatewayTimeout, gin.H{"error": "request cancelled"})
+	// 		}
+	// 		return
+	// 	default:
+	// 		mu.Unlock()
+	// 		time.Sleep(100 * time.Millisecond)
+	// 		mu.Lock()
+	// 	}
+	// }
 
 	c.JSON(http.StatusOK, showProducts)
 }
@@ -89,7 +87,7 @@ func HandleUploadCSV(c *gin.Context) {
 		return
 	}
 
-	go tryToCategory(context.Background(), results)
+	tryToCategory(context.Background(), results)
 
 	// 将数据存入DynamoDB
 	err = batchWriteToDynamoDB(ctx, results)
@@ -97,7 +95,7 @@ func HandleUploadCSV(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	//time.Sleep(10 * time.Second)
+	// time.Sleep(10 * time.Second)
 	c.JSON(http.StatusOK, gin.H{"message": "CSV uploaded successfully"})
 }
 
