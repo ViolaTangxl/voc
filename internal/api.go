@@ -13,18 +13,19 @@ type Item struct {
 	Name string `json:"name"`
 }
 
+var showProducts = make([]Item, 0)
 var products = []Item{
 	{ID: "1", Name: "手机"},
 	{ID: "2", Name: "电脑"},
 	{ID: "3", Name: "家电"},
 }
-
+var showCategories = make(map[string][]Item)
 var categories = map[string][]Item{
 	"1": {{ID: "11", Name: "苹果"}, {ID: "12", Name: "华为"}, {ID: "13", Name: "小米"}},
 	"2": {{ID: "21", Name: "笔记本"}, {ID: "22", Name: "台式机"}, {ID: "23", Name: "平板"}},
 	"3": {{ID: "31", Name: "冰箱"}, {ID: "32", Name: "洗衣机"}, {ID: "33", Name: "空调"}},
 }
-
+var showSubCategories = make(map[string][]Item)
 var subCategories = map[string][]Item{
 	"11": {{ID: "111", Name: "iPhone"}, {ID: "112", Name: "iPad"}},
 	"12": {{ID: "121", Name: "Mate系列"}, {ID: "122", Name: "P系列"}},
@@ -59,6 +60,9 @@ func HandleUploadCSV(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	go tryToCategory(ctx, results)
+
 	// 将数据存入DynamoDB
 	err = batchWriteToDynamoDB(ctx, results)
 	if err != nil {
@@ -68,6 +72,7 @@ func HandleUploadCSV(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "CSV uploaded successfully"})
 }
 
+// IndexHandle 首页展示
 func IndexHandle(c *gin.Context) {
 	filePath := "./index.html"
 	content, err := os.ReadFile(filePath)
@@ -77,6 +82,11 @@ func IndexHandle(c *gin.Context) {
 	}
 	c.Data(200, "text/html; charset=utf-8", content)
 	return
+}
+
+// 开始模型分类
+func HandleBedrockCategory(c *gin.Context) {
+	// 构建参数，调用voc.go 中的handleUploadCSV
 }
 
 func Start() {
@@ -90,6 +100,7 @@ func Start() {
 	api.GET("/categories/:id", CategoriesHandle)
 	api.GET("/subcategories/:id", SubcategoriesHandle)
 	api.POST("/upload-csv", HandleUploadCSV)
-
+	// 开始尝试分类
+	api.POST("/try-to-category", HandleBedrockCategory)
 	r.Run(":8080")
 }

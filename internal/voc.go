@@ -1,12 +1,15 @@
 package internal
 
 import (
+	"context"
 	"encoding/csv"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"strings"
 	"viola/voc/internal/model"
 
 	"github.com/google/uuid"
@@ -70,4 +73,52 @@ func handleUploadCSV(r *http.Request) ([]model.Review, error) {
 
 	fmt.Printf("csv解析完成\n 长度：%d\n", len(records))
 	return records, nil
+}
+
+// 调用模型开始分类
+func tryToCategory(ctx context.Context, reviews []model.Review) {
+	var combinedComments strings.Builder
+	// 模型分类
+	for i, review := range reviews {
+		if i == 0 {
+			//	只有第一次才要写入商品名称
+			combinedComments.WriteString(fmt.Sprintf("产品名称:%s\n", review.ProductType))
+		}
+		combinedComments.WriteString(fmt.Sprintf("评价: %s\n",
+			review.ReviewContent))
+	}
+	// 调用模型
+	resultStr := HandleBedrockClaude3SonnetV2(ctx, combinedComments.String())
+	fmt.Println("----- 调用模型完成-----")
+
+	// 解析结果拼装成ReviewResult
+	var reviewResult model.ReviewResult
+	err := json.Unmarshal([]byte(resultStr), &reviewResult)
+	if err != nil {
+		log.Fatalf("Error unmarshaling review result:", err)
+	}
+	// 产品名称赋值
+	showProducts = append(showProducts, Item{
+		ID:   reviewResult.ProductName,
+		Name: reviewResult.ProductName,
+	})
+
+	// 产品一级分类
+	firstCategory := make([]Item, 0)
+	secondCategory := make([]Item, 0)
+	for _, review := range reviewResult.Review {
+		firstCategory = append(firstCategory, Item{
+			ID:   review.FirstLevel,
+			Name: review.FirstLevel,
+		})
+		for _, sl := range review.SecondLevel {
+			secondCategory = append(secondCategory, Item{
+				ID:   sl.Categorization,
+				Name: sl.Categorization,
+			})
+		}
+		showSubCategories[review.FirstLevel] = secondCategory
+	}
+
+	fmt.Println("----- 分类完成-----")
 }

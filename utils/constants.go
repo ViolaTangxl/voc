@@ -12,3 +12,5 @@ const CLAUDE_35_SONNETV2 = "us.anthropic.claude-3-5-sonnet-20241022-v2:0"
 const CLAUDE_35_ANTHROPICVERSION = "bedrock-2023-05-31"
 
 // -------------------
+const ACCESS_KEY = ""
+const SECRET_KEY = ""
