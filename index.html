@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f0f2f5; display: flex; }
+        .sidebar { width: 200px; background-color: #001529; color: white; height: 100vh; padding-top: 20px; }
+        .sidebar ul { list-style-type: none; padding: 0; }
+        .sidebar li { padding: 10px 20px; cursor: pointer; }
+        .sidebar li:hover { background-color: #1890ff; }
+        .main-content { flex-grow: 1; }
+        .top-bar { background-color: white; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .container { display: flex; justify-content: space-between; padding: 20px; }
+        .column { width: 32%; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .column h2 { padding: 15px; margin: 0; background-color: #f7f7f7; border-bottom: 1px solid #e8e8e8; border-radius: 8px 8px 0 0; }
+        .list { padding: 0; margin: 0; list-style-type: none; max-height: 400px; overflow-y: auto; }
+        .list li { padding: 15px; border-bottom: 1px solid #e8e8e8; cursor: pointer; transition: background-color 0.3s; }
+        .list li:last-child { border-bottom: none; }
+        .list li:hover { background-color: #f5f5f5; }
+        .list li.selected { background-color: #e6f7ff; }
+        .disabled { color: #ccc; cursor: not-allowed; }
+        .top-bar {
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .file-upload {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .file-upload input[type="file"] {
+            display: none;
+        }
+        .file-upload label {
+            padding: 10px 15px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .file-upload label:hover {
+            background-color: #e0e0e0;
+        }
+        .upload-btn {
+            padding: 10px 15px;
+            background-color: #1890ff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .upload-btn:hover {
+            background-color: #40a9ff;
+        }
+        .progress-container {
+            position: relative;
+            width: 100%;
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+        .progress {
+            width: 0%;
+            height: 100%;
+            background-color: #007bff;
+            transition: width 0.3s ease;
+        }
+        .progress-text {
+            position: absolute;
+            top: -20px;
+            right: 0;
+            font-size: 14px;
+            color: #6c757d;
+        }
+        .file-upload {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .file-upload label {
+            padding: 8px 12px;
+            background-color: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .file-upload label:hover {
+            background-color: #dde2e6;
+        }
+        .upload-btn {
+            padding: 8px 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .upload-btn:hover {
+            background-color: #0056b3;
+        }
+        #file-chosen {
+            color: #6c757d;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <ul>
+        <li>Dashboard</li>
+        <li>Products</li>
+        <li>Categories</li>
+        <li>Settings</li>
+    </ul>
+</div>
+<div class="main-content">
+    <div class="top-bar">
+        <h2>CSV Upload</h2>
+        <div class="file-upload">
+            <label for="csvFile">Choose File</label>
+            <input type="file" id="csvFile" accept=".csv" />
+            <span id="file-chosen">No file chosen</span>
+            <button class="upload-btn" onclick="uploadCSV()">Upload CSV</button>
+        </div>
+        <div class="progress-container">
+            <div id="progress" class="progress"></div>
+            <div id="progress-text" class="progress-text">0%</div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="column">
+            <h2>产品名称</h2>
+            <ul id="productList" class="list"></ul>
+        </div>
+        <div class="column">
+            <h2>一级分类</h2>
+            <ul id="categoryList" class="list"></ul>
+        </div>
+        <div class="column">
+            <h2>二级分类</h2>
+            <ul id="subCategoryList" class="list"></ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    const productList = document.getElementById('productList');
+    const categoryList = document.getElementById('categoryList');
+    const subCategoryList = document.getElementById('subCategoryList');
+
+    const fileInput = document.getElementById('csvFile');
+    const fileChosen = document.getElementById('file-chosen');
+
+    fileInput.addEventListener('change', function(){
+        fileChosen.textContent = this.files[0] ? this.files[0].name : 'No file chosen';
+    });
+
+    function uploadCSV() {
+        const file = fileInput.files[0];
+        if (file) {
+            const formData = new FormData();
+            formData.append('csv', file);
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/api/upload-csv', true);
+
+            xhr.upload.onprogress = function(e) {
+                if (e.lengthComputable) {
+                    const percentComplete = Math.round((e.loaded / e.total) * 100);
+                    document.getElementById('progress').style.width = percentComplete + '%';
+                    document.getElementById('progress-text').textContent = percentComplete + '%';
+                }
+            };
+
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    alert('CSV uploaded successfully');
+                    // 可以在这里添加更多的逻辑，比如刷新产品列表
+                } else {
+                    alert('Error uploading CSV');
+                }
+            };
+
+            xhr.send(formData);
+        } else {
+            alert('Please select a CSV file');
+        }
+    }
+
+    // 加载产品列表
+    fetch('/api/products')
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(product => {
+                const li = document.createElement('li');
+                li.textContent = product.name;
+                li.dataset.id = product.id;
+                li.addEventListener('click', selectProduct);
+                productList.appendChild(li);
+            });
+            // 默认选中第一个产品
+            if (productList.firstChild) {
+                productList.firstChild.click();
+            }
+        });
+
+    function selectProduct(event) {
+        clearSelection(productList);
+        event.target.classList.add('selected');
+        loadCategories(event.target.dataset.id);
+    }
+
+    function loadCategories(productId) {
+        fetch(`/api/categories/${productId}`)
+            .then(response => response.json())
+            .then(data => {
+                categoryList.innerHTML = '';
+                data.forEach(category => {
+                    const li = document.createElement('li');
+                    li.textContent = category.name;
+                    li.dataset.id = category.id;
+                    li.addEventListener('click', selectCategory);
+                    categoryList.appendChild(li);
+                });
+                // 默认选中第一个分类
+                if (categoryList.firstChild) {
+                    categoryList.firstChild.click();
+                }
+            });
+    }
+
+    function selectCategory(event) {
+        clearSelection(categoryList);
+        event.target.classList.add('selected');
+        loadSubCategories(event.target.dataset.id);
+    }
+
+    function loadSubCategories(categoryId) {
+        fetch(`/api/subcategories/${categoryId}`)
+            .then(response => response.json())
+            .then(data => {
+                subCategoryList.innerHTML = '';
+                data.forEach(subCategory => {
+                    const li = document.createElement('li');
+                    li.textContent = subCategory.name;
+                    li.dataset.id = subCategory.id;
+                    li.addEventListener('click', selectSubCategory);
+                    subCategoryList.appendChild(li);
+                });
+            });
+    }
+
+    function selectSubCategory(event) {
+        clearSelection(subCategoryList);
+        event.target.classList.add('selected');
+    }
+
+    function clearSelection(list) {
+        Array.from(list.children).forEach(li => li.classList.remove('selected'));
+    }
+
+</script>
+</body>
+</html>
