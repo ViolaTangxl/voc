@@ -3,6 +3,7 @@ package internal
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"viola/voc/utils"
 
@@ -218,11 +219,15 @@ func HandleBedrockClaude3SonnetV2(ctx context.Context, comments string) string {
 	var err error
 	input.Body, err = json.Marshal(requestBody)
 	if err != nil {
+		fmt.Println("------------")
+		fmt.Printf("err:%s\n", err)
 		log.Fatal(err)
 	}
 	// Call model
 	output, err := BedrockClient.InvokeModel(ctx, input)
 	if err != nil {
+		fmt.Println("========")
+		fmt.Printf("err:%s\n", err)
 		log.Fatal(err)
 	}
 

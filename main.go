@@ -6,7 +6,7 @@ import (
 
 func main() {
 	// // 初始化 bedrock client
-	// internal.InitBedrockClient()
+	internal.InitBedrockClient()
 	// 初始化数据库
 	internal.InitDynamoDB()
 	//

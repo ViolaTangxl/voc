@@ -185,7 +185,14 @@
             xhr.onload = function() {
                 if (xhr.status === 200) {
                     alert('CSV uploaded successfully');
-                    // 可以在这里添加更多的逻辑，比如刷新产品列表
+                    // 上传成功后刷新产品列表
+                    loadProducts();
+                    // 重置进度条
+                    document.getElementById('progress').style.width = '0%';
+                    document.getElementById('progress-text').textContent = '0%';
+                    // 清空文件选择
+                    fileInput.value = '';
+                    fileChosen.textContent = 'No file chosen';
                 } else {
                     alert('Error uploading CSV');
                 }
@@ -197,22 +204,50 @@
         }
     }
 
-    // 加载产品列表
-    fetch('/api/products')
-        .then(response => response.json())
-        .then(data => {
-            data.forEach(product => {
-                const li = document.createElement('li');
-                li.textContent = product.name;
-                li.dataset.id = product.id;
-                li.addEventListener('click', selectProduct);
-                productList.appendChild(li);
+    // 将原来的产品加载逻辑封装成一个函数
+    function loadProducts() {
+        fetch('/api/products')
+            .then(response => response.json())
+            .then(data => {
+                productList.innerHTML = ''; // 清空现有列表
+                data.forEach(product => {
+                    const li = document.createElement('li');
+                    li.textContent = product.name;
+                    li.dataset.id = product.id;
+                    li.addEventListener('click', selectProduct);
+                    productList.appendChild(li);
+                });
+                // 默认选中第一个产品
+                if (productList.firstChild) {
+                    productList.firstChild.click();
+                }
+            })
+            .catch(error => {
+                console.error('Error loading products:', error);
+                productList.innerHTML = '<li class="error">Error loading products</li>';
             });
-            // 默认选中第一个产品
-            if (productList.firstChild) {
-                productList.firstChild.click();
-            }
-        });
+    }
+
+    // 初始加载
+    loadProducts();
+
+
+    // 加载产品列表
+    // fetch('/api/products')
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         data.forEach(product => {
+    //             const li = document.createElement('li');
+    //             li.textContent = product.name;
+    //             li.dataset.id = product.id;
+    //             li.addEventListener('click', selectProduct);
+    //             productList.appendChild(li);
+    //         });
+    //         // 默认选中第一个产品
+    //         if (productList.firstChild) {
+    //             productList.firstChild.click();
+    //         }
+    //     });
 
     function selectProduct(event) {
         clearSelection(productList);

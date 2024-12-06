@@ -78,6 +78,7 @@ func handleUploadCSV(r *http.Request) ([]model.Review, error) {
 // 调用模型开始分类
 func tryToCategory(ctx context.Context, reviews []model.Review) {
 	var combinedComments strings.Builder
+	fmt.Println("----- 准备调用模型-----")
 	// 模型分类
 	for i, review := range reviews {
 		if i == 0 {
@@ -105,20 +106,29 @@ func tryToCategory(ctx context.Context, reviews []model.Review) {
 
 	// 产品一级分类
 	firstCategory := make([]Item, 0)
-	secondCategory := make([]Item, 0)
+	// 遍历每个一级分类
 	for _, review := range reviewResult.Review {
+		// 添加一级分类
 		firstCategory = append(firstCategory, Item{
 			ID:   review.FirstLevel,
 			Name: review.FirstLevel,
 		})
+
+		// 为每个一级分类创建对应的二级分类数组
+		secondCategory := make([]Item, 0)
 		for _, sl := range review.SecondLevel {
 			secondCategory = append(secondCategory, Item{
 				ID:   sl.Categorization,
 				Name: sl.Categorization,
 			})
 		}
+		// 将当前一级分类对应的二级分类存储到 showSubCategories
 		showSubCategories[review.FirstLevel] = secondCategory
 	}
 
+	// 存储产品对应的一级分类
+	showCategories[reviewResult.ProductName] = firstCategory
+	fmt.Printf("showCategories:【%+v】\n", showCategories)
+	fmt.Printf("showSubCategories:【%+v】\n", showSubCategories)
 	fmt.Println("----- 分类完成-----")
 }
