@@ -98,37 +98,7 @@ func tryToCategory(ctx context.Context, reviews []model.Review) {
 	if err != nil {
 		log.Fatalf("Error unmarshaling review result:", err)
 	}
-	// 产品名称赋值
-	showProducts = append(showProducts, Item{
-		ID:   reviewResult.ProductName,
-		Name: reviewResult.ProductName,
-	})
 
-	// 产品一级分类
-	firstCategory := make([]Item, 0)
-	// 遍历每个一级分类
-	for _, review := range reviewResult.Review {
-		// 添加一级分类
-		firstCategory = append(firstCategory, Item{
-			ID:   review.FirstLevel,
-			Name: review.FirstLevel,
-		})
-
-		// 为每个一级分类创建对应的二级分类数组
-		secondCategory := make([]Item, 0)
-		for _, sl := range review.SecondLevel {
-			secondCategory = append(secondCategory, Item{
-				ID:   sl.Categorization,
-				Name: sl.Categorization,
-			})
-		}
-		// 将当前一级分类对应的二级分类存储到 showSubCategories
-		showSubCategories[review.FirstLevel] = secondCategory
-	}
-
-	// 存储产品对应的一级分类
-	showCategories[reviewResult.ProductName] = firstCategory
-	fmt.Printf("showCategories:【%+v】\n", showCategories)
-	fmt.Printf("showSubCategories:【%+v】\n", showSubCategories)
+	ProductResp = append(ProductResp, reviewResult)
 	fmt.Println("----- 分类完成-----")
 }

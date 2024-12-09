@@ -21,64 +21,6 @@
         .list li:hover { background-color: #f5f5f5; }
         .list li.selected { background-color: #e6f7ff; }
         .disabled { color: #ccc; cursor: not-allowed; }
-        .top-bar {
-            background-color: white;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .file-upload {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .file-upload input[type="file"] {
-            display: none;
-        }
-        .file-upload label {
-            padding: 10px 15px;
-            background-color: #f0f0f0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .file-upload label:hover {
-            background-color: #e0e0e0;
-        }
-        .upload-btn {
-            padding: 10px 15px;
-            background-color: #1890ff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .upload-btn:hover {
-            background-color: #40a9ff;
-        }
-        .progress-container {
-            position: relative;
-            width: 100%;
-            height: 8px;
-            background-color: #e9ecef;
-            border-radius: 4px;
-            margin-top: 15px;
-            overflow: hidden;
-        }
-        .progress {
-            width: 0%;
-            height: 100%;
-            background-color: #007bff;
-            transition: width 0.3s ease;
-        }
-        .progress-text {
-            position: absolute;
-            top: -20px;
-            right: 0;
-            font-size: 14px;
-            color: #6c757d;
-        }
         .file-upload {
             display: flex;
             align-items: center;
@@ -96,6 +38,9 @@
         .file-upload label:hover {
             background-color: #dde2e6;
         }
+        .file-upload input[type="file"] {
+            display: none;
+        }
         .upload-btn {
             padding: 8px 12px;
             background-color: #007bff;
@@ -112,145 +57,16 @@
             color: #6c757d;
             font-size: 14px;
         }
-        .spinner {
-            display: none;
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.4);
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 300px;
-            text-align: center;
-            border-radius: 5px;
-        }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        .spinner-container {
-            display: none;
-            align-items: center;
-            justify-content: center;
-            margin-top: 15px;
-        }
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 10px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .toast {
-            visibility: hidden;
-            min-width: 250px;
-            margin-left: -125px;
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            border-radius: 2px;
-            padding: 16px;
-            position: fixed;
-            z-index: 1;
-            left: 50%;
-            bottom: 30px;
-            font-size: 17px;
-        }
-        .toast.show {
-            visibility: visible;
-            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-            animation: fadein 0.5s, fadeout 0.5s 2.5s;
-        }
-        @-webkit-keyframes fadein {
-            from {bottom: 0; opacity: 0;}
-            to {bottom: 30px; opacity: 1;}
-        }
-        @keyframes fadein {
-            from {bottom: 0; opacity: 0;}
-            to {bottom: 30px; opacity: 1;}
-        }
-        @-webkit-keyframes fadeout {
-            from {bottom: 30px; opacity: 1;}
-            to {bottom: 0; opacity: 0;}
-        }
-        @keyframes fadeout {
-            from {bottom: 30px; opacity: 1;}
-            to {bottom: 0; opacity: 0;}
-        }
-        .toast-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none;
-            z-index: 9999;
-        }
-        .toast {
-            visibility: hidden;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: #fff;
-            text-align: center;
-            border-radius: 4px;
-            padding: 16px 24px;
-            font-size: 17px;
-            max-width: 80%;
-            opacity: 0;
-            transition: opacity 0.3s, visibility 0.3s;
-        }
-        .toast.show {
-            visibility: visible;
-            opacity: 1;
-        }
         .spinner-container {
             display: none;
             align-items: center;
             justify-content: center;
             margin-top: 15px;
             padding: 10px;
-            background-color: #f0f8ff; /* 浅蓝色背景 */
+            background-color: #f0f8ff;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-
         .spinner {
             width: 30px;
             height: 30px;
@@ -260,40 +76,45 @@
             animation: spin 1s linear infinite;
             margin-right: 15px;
         }
-
         .loading-text {
             font-size: 18px;
             font-weight: bold;
-            color: #3498db; /* 使用更醒目的蓝色 */
+            color: #3498db;
             animation: pulse 2s infinite;
         }
-
+        .toast {
+            visibility: hidden;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            text-align: center;
+            border-radius: 4px;
+            padding: 16px 24px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-size: 17px;
+        }
+        .toast.show {
+            visibility: visible;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
         @keyframes pulse {
             0% { opacity: 1; }
             50% { opacity: 0.7; }
             100% { opacity: 1; }
         }
-
         @keyframes dots {
-            0%, 20% {
-                content: "";
-            }
-            40% {
-                content: ".";
-            }
-            60% {
-                content: "..";
-            }
-            80%, 100% {
-                content: "...";
-            }
+            0%, 20% { content: ""; }
+            40% { content: "."; }
+            60% { content: ".."; }
+            80%, 100% { content: "..."; }
         }
-
         .dots::after {
             content: "";
             animation: dots 1.5s infinite;
@@ -301,7 +122,6 @@
             width: 20px;
             text-align: left;
         }
-
     </style>
 </head>
 <body>
@@ -350,7 +170,6 @@
     const productList = document.getElementById('productList');
     const categoryList = document.getElementById('categoryList');
     const subCategoryList = document.getElementById('subCategoryList');
-
     const fileInput = document.getElementById('csvFile');
     const fileChosen = document.getElementById('file-chosen');
 
@@ -370,13 +189,12 @@
             document.getElementById('spinner-container').style.display = 'flex';
 
             xhr.onload = function() {
-                document.getElementById('spinner-container').style.display = 'none';
                 if (xhr.status === 200) {
-                    // showToast('CSV uploaded successfully');
                     loadProducts();
                     fileInput.value = '';
                     fileChosen.textContent = 'No file chosen';
                 } else {
+                    document.getElementById('spinner-container').style.display = 'none';
                     showToast('Error uploading CSV');
                 }
             };
@@ -387,7 +205,7 @@
         }
     }
 
-    // 显示 Toast 提示
+
     function showToast(message) {
         const toast = document.getElementById('toast');
         toast.textContent = message;
@@ -397,95 +215,78 @@
         }, 3000);
     }
 
-    // 将原来的产品加载逻辑封装成一个函数
     function loadProducts() {
         fetch('/api/products')
             .then(response => response.json())
             .then(data => {
-                productList.innerHTML = ''; // 清空现有列表
-                data.forEach(product => {
+                window.fullData = data; // 直接存储整个数组
+
+                productList.innerHTML = '';
+                data.forEach((product, index) => {
                     const li = document.createElement('li');
-                    li.textContent = product.name;
-                    li.dataset.id = product.id;
+                    li.textContent = product.product_name;
+                    li.dataset.index = index;
                     li.addEventListener('click', selectProduct);
                     productList.appendChild(li);
                 });
-                // 默认选中第一个产品
                 if (productList.firstChild) {
                     productList.firstChild.click();
                 }
+                // 在数据加载完成后才隐藏spinner
+                document.getElementById('spinner-container').style.display = 'none';
             })
             .catch(error => {
                 console.error('Error loading products:', error);
                 productList.innerHTML = '<li class="error">Error loading products</li>';
+                // 发生错误时也要隐藏spinner
+                document.getElementById('spinner-container').style.display = 'none';
             });
     }
-
-    // 初始加载
-    // loadProducts();
-
-
-    // 加载产品列表
-    // fetch('/api/products')
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         data.forEach(product => {
-    //             const li = document.createElement('li');
-    //             li.textContent = product.name;
-    //             li.dataset.id = product.id;
-    //             li.addEventListener('click', selectProduct);
-    //             productList.appendChild(li);
-    //         });
-    //         // 默认选中第一个产品
-    //         if (productList.firstChild) {
-    //             productList.firstChild.click();
-    //         }
-    //     });
 
     function selectProduct(event) {
         clearSelection(productList);
         event.target.classList.add('selected');
-        loadCategories(event.target.dataset.id);
+        const productIndex = event.target.dataset.index;
+        loadCategories(productIndex);
     }
 
-    function loadCategories(productId) {
-        fetch(`/api/categories/${productId}`)
-            .then(response => response.json())
-            .then(data => {
-                categoryList.innerHTML = '';
-                data.forEach(category => {
-                    const li = document.createElement('li');
-                    li.textContent = category.name;
-                    li.dataset.id = category.id;
-                    li.addEventListener('click', selectCategory);
-                    categoryList.appendChild(li);
-                });
-                // 默认选中第一个分类
-                if (categoryList.firstChild) {
-                    categoryList.firstChild.click();
-                }
-            });
+    function loadCategories(productIndex) {
+        const productData = window.fullData[productIndex];
+        categoryList.innerHTML = '';
+
+        productData.comments.forEach((category, index) => {
+            const li = document.createElement('li');
+            li.textContent = `${category.first_level} (${category.percentage})`;
+            li.dataset.productIndex = productIndex;
+            li.dataset.categoryIndex = index;
+            li.addEventListener('click', selectCategory);
+            categoryList.appendChild(li);
+        });
+
+        if (categoryList.firstChild) {
+            categoryList.firstChild.click();
+        }
     }
 
     function selectCategory(event) {
         clearSelection(categoryList);
         event.target.classList.add('selected');
-        loadSubCategories(event.target.dataset.id);
+        const productIndex = event.target.dataset.productIndex;
+        const categoryIndex = event.target.dataset.categoryIndex;
+        loadSubCategories(productIndex, categoryIndex);
     }
 
-    function loadSubCategories(categoryId) {
-        fetch(`/api/subcategories/${categoryId}`)
-            .then(response => response.json())
-            .then(data => {
-                subCategoryList.innerHTML = '';
-                data.forEach(subCategory => {
-                    const li = document.createElement('li');
-                    li.textContent = subCategory.name;
-                    li.dataset.id = subCategory.id;
-                    li.addEventListener('click', selectSubCategory);
-                    subCategoryList.appendChild(li);
-                });
-            });
+    function loadSubCategories(productIndex, categoryIndex) {
+        const categoryData = window.fullData[productIndex].comments[categoryIndex];
+        subCategoryList.innerHTML = '';
+
+        categoryData.second_level.forEach((subCategory, index) => {
+            const li = document.createElement('li');
+            li.textContent = `${subCategory.categorization} (${subCategory.percentage})`;
+            li.dataset.index = index;
+            li.addEventListener('click', selectSubCategory);
+            subCategoryList.appendChild(li);
+        });
     }
 
     function selectSubCategory(event) {
@@ -497,6 +298,8 @@
         Array.from(list.children).forEach(li => li.classList.remove('selected'));
     }
 
+    // 初始加载
+    loadProducts();
 </script>
 </body>
 </html>

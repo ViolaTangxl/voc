@@ -242,7 +242,6 @@ func batchWriteToDynamoDB(ctx context.Context, items []model.Review) error {
 
 		// 执行批量写入
 		for {
-			fmt.Printf("input: 【+%v】\n", input)
 			result, err := DBClient.BatchWriteItem(ctx, input)
 			if err != nil {
 				fmt.Println("Error batch writing to DynamoDB:", err)
