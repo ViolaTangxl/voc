@@ -11,6 +11,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/bedrockagentruntime v1.29.0
 	github.com/aws/aws-sdk-go-v2/service/bedrockruntime v1.22.0
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.38.0
+	github.com/aws/aws-sdk-go-v2/service/redshiftdata v1.31.4
 	github.com/gin-gonic/gin v1.10.0
 	github.com/google/uuid v1.6.0
 	github.com/tidwall/gjson v1.18.0

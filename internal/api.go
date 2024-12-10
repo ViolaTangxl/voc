@@ -142,15 +142,16 @@ func HandleUploadCSV(c *gin.Context) {
 		return
 	}
 
-	go tryToCategory(context.Background(), results)
+	//go tryToCategory(context.Background(), results)
 
 	// 将数据存入DynamoDB
-	err = batchWriteToDynamoDB(ctx, results)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
+	//err = batchWriteToDynamoDB(ctx, results)
+	//if err != nil {
+	//	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	//	return
+	//}
+	// 将csv数据存入redshift
+	InsertDataToRedshift(ctx, results)
 	c.JSON(http.StatusOK, gin.H{"message": "CSV uploaded successfully"})
 }
 

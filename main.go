@@ -7,9 +7,11 @@ import (
 func main() {
 	// // 初始化 bedrock client
 	internal.InitBedrockClient()
-	// 初始化数据库
+	// 初始化DynamoDB 数据库
 	internal.InitDynamoDB()
-	//
+	// 初始化Redshift 数据库
+	internal.InitRedShift()
+
 	// // 从csv中插入数据
 	// // internal.InsertData()
 	//
